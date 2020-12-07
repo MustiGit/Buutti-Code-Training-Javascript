@@ -1,3 +1,3 @@
 ### Sami Mustonen tehtävien palautuskansio
 
-Syntax guide: https://www.markdownguide.org/cheat-sheet/
+Syntax guide: https://www.markdownguide.org/cheat-sheet/git
