@@ -1,9 +1,10 @@
 {
-  "name": "npmeslint",
-  "version": "1.0.0",
+  "name": "exercises",
+  "version": "1.0.0 major, minor, patch",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
+    "start": "node modifyString.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
