@@ -12,7 +12,6 @@ const ordinals = ["st", "nd", "rd", "th"];
 const modArray = [];
 
 for (let i = 0; i < competitors.length; i++) {
-    // console.log(ordinal_suffix_of(4));
     modArray.push(ordinalFunction(i+1) + " competitor was " + competitors[i]);
 }
 
