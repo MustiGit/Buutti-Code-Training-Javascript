@@ -22,10 +22,7 @@ if (input <= input2) {
     }
 } else {
     for (let i = input2; i <= input; i++) {
-        numArray.push(i);
-
-        // Reverse order of array
-        numArray.unshift(numArray.pop());
+        numArray.unshift(i);
     }
 }
 

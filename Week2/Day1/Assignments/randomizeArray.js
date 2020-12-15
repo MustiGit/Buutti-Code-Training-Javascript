@@ -8,6 +8,6 @@ node .\randomizeArray.js -> [5, 4, 18, 32, 8, 6, 2, 25, 14, 10] */
 
 const array = [2, 4, 5, 6, 8, 10, 14, 18, 25, 32];
 
-const shuffledArray = array.sort(() => Math.random() - 0.5);
+const shuffledArray = array.sort(() => 0.5 - Math.random());
 
 console.log(shuffledArray);
