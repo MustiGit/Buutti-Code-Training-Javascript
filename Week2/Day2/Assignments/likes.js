@@ -13,6 +13,11 @@ For 4 or more names, "2 others" simply increases. */
 // const likes = ["Alex", "Linda", "Mark", "Max", "Pertti"];
 
 console.log(likeFunction("Alex", "Linda", "Mark", "Stella", "JA_PERTTI"));
+console.log(likeFunction("Alex", "Linda", "Mark", "Stella"));
+console.log(likeFunction("Alex", "Linda", "Mark"));
+console.log(likeFunction("Alex", "Linda"));
+console.log(likeFunction("Alex"));
+console.log(likeFunction());
 
 /**
  * Function takes in n amount of parameters and adds them in array
@@ -25,15 +30,14 @@ function likeFunction(...parameters) {
     if (likes.length === 0) {
         return "No one likes this";
     } else if (likes.length === 1) {
-        return likes[0] + " likes this";
+        return `${likes[0]} likes this`;
     } else if (likes.length === 2) {
-        return likes[0] + " and " + likes[1] + " like this";
+        return `${likes[0]} and ${likes[1]} like this`;
     } else if (likes.length === 3) {
-        return likes[0] + ", " + likes[1] + " and " +
-        likes[2] + " like this";
+        return `${likes[0]}, ${likes[1]} and ${likes[2]} like this`;
     } else if (likes.length >= 4) {
-        return likes[0] + ", " + likes[1] + " and " + (likes.length-2) +
-    " others like this";
+        return `${likes[0]}, ${likes[1]} and ` +
+        `${(likes.length-2)} others like this`;
     } else {
         return "Something went wrong, try again";
     }

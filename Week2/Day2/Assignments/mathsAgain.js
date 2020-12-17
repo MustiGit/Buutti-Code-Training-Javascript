@@ -16,3 +16,24 @@ For n = 3 the process would be following
 6: 2 is even   →  n = 2 / 2 = 1
 And finally we reached nr. 1 after 6 steps */
 
+console.log(numberUno(6));
+
+/**
+ * Function compares arrays and checks for matches
+ * and returns calculated score
+ * @param {number} n - Takes in number
+ * @return {any} Returns 0 if score is < 0, else score
+ */
+function numberUno(n) {
+    let steps = 0;
+    while (n > 1) {
+        console.log(n);
+        if (n % 2 === 0) {
+            n = n / 2;
+        } else {
+            n = n * 3 + 1;
+        }
+        steps++;
+    }
+    return `Reached nr. 1 after ${steps} steps!`;
+}

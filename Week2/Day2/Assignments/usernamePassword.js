@@ -44,5 +44,5 @@ function generateCredentials(firstName, lastName) {
     String.fromCharCode(Math.floor(Math.random() * (47 - 33) + 33)) +
     (new Date().getFullYear() % 100);
 
-    return "Username: " + userName + ", Password: " + password;
+    return `Username: ${userName}, Password: ${password}`;
 }
