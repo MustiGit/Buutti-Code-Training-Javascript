@@ -28,6 +28,7 @@ console.log(checkExam(["b", "c", "b", "a"], ["", "a", "a", "c"]));
 function checkExam(...parameters) {
     const answers = parameters;
     let score = 0;
+
     for (let i = 0; i < answers[0].length; i++) {
         if (answers[0][i] === answers[1][i]) {
             score += 4;

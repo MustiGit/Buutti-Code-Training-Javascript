@@ -14,6 +14,7 @@ console.log(getVowelCount(input));
 function getVowelCount(str) {
     // global, case insensitive regexp search -> match array
     const count = str.match(/[aeiouy]/gi);
+
     // if none, return 0, else return count.length
     return count === null ? 0 : count.length;
 }

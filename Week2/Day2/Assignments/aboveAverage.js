@@ -11,21 +11,17 @@ console.log(aboveAverage([1, 5, 9, 3]));
  * then it makes new array that contains only numbers higher than average
  * @return {string} Returns new array with > average numbers
  */
-function aboveAverage(...parameters) {
-    const values = parameters;
-    let total = 0;
+function aboveAverage([...parameters]) {
+    // Check for each parameter element and add parsed value to total
+    const total = parameters.reduce((total, value) => total +
+    parseInt(value), 0);
+
+    // Calculate average score
+    const average = (total / parameters.length);
+
+    // Make newArr for from parameter numbers that are over average value
     const newArr = [];
+    parameters.forEach((num) => (num > average) ? newArr.push(num) : null);
 
-    for (let i = 0; i < values[0].length; i++) {
-        total += parseInt(values[0][i]);
-    }
-
-    const average = (total / values[0].length);
-
-    for (let i = 0; i < parameters[0].length; i++) {
-        if (parameters[0][i] > average) {
-            newArr.push(parameters[0][i]);
-        }
-    }
     return newArr;
 }
