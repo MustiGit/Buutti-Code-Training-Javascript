@@ -16,7 +16,7 @@ console.log(calculator(num1, operator, num2));
  * Function returns calculated answer
  * @param {number} num1 - Takes in number
  * @param {string} operator - Takes in string
- * @param {number} num2 - Takes in number
+ * @param {number} num2 - Takes in number 2
  * @return {any} Returns answer for calculation
  */
 function calculator(num1, operator, num2) {

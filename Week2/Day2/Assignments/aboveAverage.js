@@ -7,8 +7,8 @@ values greater than 4.5 */
 console.log(aboveAverage([1, 5, 9, 3]));
 
 /**
- * Function takes array and calculates average
- * then it makes new array that contains only numbers higher than average
+ * Function takes an array and calculates average value of it,
+ * then it creates the new array that contains only numbers higher than average
  * @return {string} Returns new array with > average numbers
  */
 function aboveAverage([...parameters]) {

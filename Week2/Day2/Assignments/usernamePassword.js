@@ -16,6 +16,7 @@ console.log(generateCredentials(firstName, lastName));
 
 
 console.log(generateCredentials("John", "Doe"));
+
 /**
  * Function takes in first and last name as parameters and uses them to
  * randomly generate username and password for user
