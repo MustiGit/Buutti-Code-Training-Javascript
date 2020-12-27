@@ -102,9 +102,9 @@ while (running) {
         } else if (input === "depositFunds") {
             depositFunds();
         } else if (input === "transferFunds") {
-            // transfer funds
-        } else if ((input === "requestFunds") || (input === "fundRequests")) {
-            requests();
+            transferFunds();
+        } else if (input === "requestFunds") {
+            requestFunds();
         } else if (input === "return") {
             currentLoc = "menu";
         } else {
@@ -112,8 +112,94 @@ while (running) {
         }
     }
 }
+
+function requestFunds() {
+    // Some
+}
+
+function transferFunds() {
+    console.log("\nTRANSFER FUNDS");
+    console.log("-----------------------------");
+    console.log(user.name + ", (" + user.id + ")");
+    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+    console.log("-----------------------------");
+    const transferAmount = readline.question("How much money do you want to transfer (min. 1)?\n>> ");
+
+    if (transferAmount === "quit") {
+        currentLoc = "funds";
+    } else if (transferAmount >= 1) {
+        const transferTarget = readline.question("Which ID will receive transfer? (or 'quit' to go back)\n>> ");
+
+        const userArray = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+        if (transferTarget === "quit") {
+            currentLoc = "funds";
+        } else {
+            // Compare userArray:s id:s with transferTarget's ID and take true/false in checkBoolean
+            const checkBoolean = userArray.some((x)=> x.id === transferTarget);
+
+            if (checkBoolean) {
+                const toCheckPassword = readline.question("To transfer funds, please enter your password " +
+                "(or type 'quit' to go back):\n>> ");
+
+                if (toCheckPassword === "quit") {
+                    currentLoc = "funds";
+                } else {
+                    if (toCheckPassword === user.password) {
+                        user.balance = Number(user.balance) - Number(transferAmount);
+                        saveBalance(user.id, user.balance);
+
+                        // Search userArray for transferTarget and add it with modified values to newAllUsers array.
+                        const newAllUsers = userArray.map((x) =>
+                            x.id === transferTarget ?
+                                {...x, balance: Number(x.balance) + Number(transferAmount)} :
+                                x,
+                        );
+
+                        // Saving newAllUsers back to accountDetails.json file
+                        fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+                            if (err) {
+                                console.log("Could not save userData to file!");
+                            }
+                        });
+
+                        console.log("\nTransfer successful, your balance in your account is now: " +
+                        Math.floor(user.balance* 100) / 100);
+                    } else {
+                        console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
+                        transferFunds();
+                    }
+                }
+            } else {
+                console.log("No user found by that ID. Try again.");
+                transferFunds();
+            }
+        }
+    } else {
+        console.log("\nSorry but min. transfer amount is 1e and you can only use numbers (or 'quit' to go back).");
+        transferFunds();
+    }
+}
+
 function doesAccountExist() {
-    // does account exist
+    const accToCheck = readline.question("Give ID number to see, if the account exists (or 'return' to go back)\n>> ");
+
+    const userArray = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+    if (accToCheck === "return") {
+        currentLoc = "account";
+    } else {
+        // Compare userArray:s id:s with accToCheck's ID and take true/false in checkBoolean
+        const checkBoolean = userArray.some((x)=> x.id === accToCheck);
+
+        if (checkBoolean) {
+            console.log("User found by that ID. If you are xfering money, " +
+            "contact user first to make sure it's correct ID");
+        } else {
+            console.log("No user found by that ID.");
+        }
+        doesAccountExist();
+    }
 }
 
 function depositFunds() {
@@ -211,10 +297,6 @@ function saveBalance(userID, userBalance) {
             console.log("Could not save userData to file!");
         }
     });
-}
-
-function requests() {
-    // requests
 }
 
 function printHelp() {
@@ -387,6 +469,97 @@ function closeAccount() {
     } else if (input === "no") {
         console.log("Ok, returning to menu");
         // set currentLock to menu, returning back to account menu
+        currentLoc = "account";
+    }
+}
+
+function modifyAccount() {
+    console.log("\nMODIFY ACCOUNT");
+    console.log("-----------------------------");
+    console.log(user.name + ", (" + user.id + ")");
+    console.log("-----------------------------");
+
+    input = readline.question("Do you want to modify a 'name' or 'password'? (or 'quit' to go back)\n>> ");
+    if (input === "name") {
+        input = readline.question("Ok, type in new name of at least 5 letters (or 'quit' to go back):\n>> ");
+
+        // More checks if needed, only letters, firstname, lastname....
+        if (input.length < 5) {
+            console.log("Name must contain at least 5 letters. Try again.");
+            modifyAccount();
+        } else if (input === "quit") {
+            modifyAccount();
+        } else {
+            const newName = input;
+
+            console.log("Current name: " + user.name + " -> New name: " + newName + ".");
+
+            input = readline.question("To proceed with change, type in your "+
+            "current password (or 'quit' to go back):\n>> ");
+
+            if (input === user.password) {
+                user.name = newName;
+
+                // Read data from accountDetails, add it to allUsers
+                allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+                const newAllUsers = allUsers.map((x) =>
+                    x.id === user.id ?
+                        {...x, name: user.name} :
+                        x,
+                );
+                // Saving newAllUsers back to accountDetails.json file
+                fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+                    if (err) {
+                        console.log("Could not save userData to file!");
+                    }
+                });
+
+                console.log("Name changed. Hello " + user.name + "!");
+            } else if (input === "quit") {
+                modifyAccount();
+            } else {
+                console.log("Wrong password, try again.");
+                modifyAccount();
+            }
+        }
+    } else if (input === "password") {
+        input = readline.question("Ok, type in new password (or 'quit' to go back):\n>> ");
+
+        // More checks if needed, letters, numbers, special marks....
+        if (input === "quit") {
+            modifyAccount();
+        } else if (input.length < 5) {
+            console.log("\nNew password must contain at least 5 letters. Try again.");
+            modifyAccount();
+        } else {
+            const newPassword = input;
+            input = readline.question("To proceed with change, type in your "+
+            "old password (or 'quit' to go back):\n>> ");
+            if (input === user.password) {
+                user.password = newPassword;
+
+                // Read data from accountDetails, add it to allUsers
+                allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+                const newAllUsers = allUsers.map((x) =>
+                    x.id === user.id ?
+                        {...x, password: user.password} :
+                        x,
+                );
+                // Saving newAllUsers back to accountDetails.json file
+                fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+                    if (err) {
+                        console.log("Could not save userData to file!");
+                    }
+                });
+
+                console.log("Password changed.");
+            }
+        }
+    } else if (input === "quit") {
+        currentLoc = "account";
+    } else {
         currentLoc = "account";
     }
 }
