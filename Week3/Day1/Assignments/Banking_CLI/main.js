@@ -42,9 +42,29 @@ while (running) {
         console.log("-----------------------------");
         console.log("Welcome " + user.name + "!\n");
         console.log("Choose an option:");
+        console.log("account --> ACCOUNT OPTIONS");
+        console.log("funds --> FUNDS AND REQUESTS");
+        console.log("-----------------------------");
+        console.log("logout -----------> LOG OUT FROM ACCOUNT");
+
+        input = readline.question(">> ");
+
+        if (input === "account") {
+            currentLoc = "account";
+        } else if (input === "funds") {
+            currentLoc = "funds";
+        } else if (input === "logout") {
+            logOut();
+        } else {
+            currentLoc = "menu";
+        }
+    } else if (currentLoc === "account") {
+        console.log("Current account: " + user.name + "(" + user.id + ")\n");
+        console.log("Choose an option:");
         console.log("modifyAccount --> MODIFY ACCOUNT");
         console.log("closeAccount ----------> CLOSE ACCOUNT");
-        console.log("logout -----------> LOG OUT FROM ACCOUNT");
+        console.log("doesAccountExist -- > CHECK BY ID IF ACCOUNT EXISTS");
+        console.log("return -----------> RETURN TO MENU");
 
         input = readline.question(">> ");
 
@@ -52,12 +72,149 @@ while (running) {
             modifyAccount();
         } else if (input === "closeAccount") {
             closeAccount();
-        } else if (input === "logout") {
-            logOut();
-        } else {
+        } else if (input === "doesAccountExist") {
+            doesAccountExist();
+        } else if (input === "return") {
             currentLoc = "menu";
+        } else {
+            currentLoc = "account";
+        }
+    } else if (currentLoc === "funds") {
+        console.log("\nCurrent account: " + user.name + ", (" + user.id + ")");
+        console.log("Balance: " + user.balance + "\n");
+        console.log("Choose an option:");
+        console.log("-----------------------------");
+        console.log("Funds:");
+        console.log("withdrawFunds -- > WITHDRAW FUNDS");
+        console.log("depositFunds --- > DEPOSIT FUNDS");
+        console.log("transferFunds -- > TRANSFER FUNDS");
+        console.log("-----------------------------");
+        console.log("Requests:");
+        console.log("requestFunds -- > REQUEST FUNDS FROM ANOTHER USER");
+        console.log("fundRequests -- > SHOW PENDING FUND REQUESTS");
+        console.log("-----------------------------");
+        console.log("return -----------> RETURN TO MENU");
+
+        input = readline.question(">> ");
+
+        if (input === "withdrawFunds") {
+            withdrawFunds();
+        } else if (input === "depositFunds") {
+            depositFunds();
+        } else if (input === "transferFunds") {
+            // transfer funds
+        } else if ((input === "requestFunds") || (input === "fundRequests")) {
+            requests();
+        } else if (input === "return") {
+            currentLoc = "menu";
+        } else {
+            currentLoc = "funds";
         }
     }
+}
+function doesAccountExist() {
+    // does account exist
+}
+
+function depositFunds() {
+    console.log("\nDEPOSIT FUNDS");
+    console.log("-----------------------------");
+    console.log(user.name + ", (" + user.id + ")");
+    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+    console.log("-----------------------------");
+    const depositAmount = readline.question("How much money do you want to deposit (min. 1)?\n>> ");
+
+    if (depositAmount === "quit") {
+        currentLoc = "funds";
+    } else if (depositAmount >= 1) {
+        const toCheckPassword = readline.question("To deposit funds, please enter your password " +
+        "(or type 'quit' to go back):\n>> ");
+        if (toCheckPassword === "quit") {
+            currentLoc = "funds";
+        } else {
+            if (toCheckPassword === user.password) {
+                user.balance = Number(user.balance) + Number(depositAmount);
+
+                saveBalance(user.id, user.balance);
+
+                console.log("\nDeposit successful, your balance in your account is now: " +
+                Math.floor(user.balance* 100) / 100);
+            } else {
+                console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
+                depositFunds();
+            }
+        }
+    } else {
+        console.log("\nSorry but min. deposit amount is 1e and you can only use numbers(or 'quit' to go back).");
+        depositFunds();
+    }
+}
+
+function withdrawFunds() {
+    console.log("\nWITHDRAW FUNDS");
+    console.log("-----------------------------");
+    console.log(user.name + ", (" + user.id + ")");
+    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+    console.log("-----------------------------");
+
+    const withdrawAmount = (readline.question("How much money do you want to withdraw?\n>> "));
+
+    if (withdrawAmount === "quit") {
+        currentLoc = "funds";
+    } else if (withdrawAmount >= 1) {
+        const toCheckPassword = readline.question("To withdraw funds, please enter your password " +
+        "(or type 'quit' to go back):\n>> ");
+        if (toCheckPassword === "quit") {
+            currentLoc = "funds";
+        } else {
+            if (toCheckPassword === user.password) {
+                const balanceCheck = user.balance - withdrawAmount;
+
+                if (balanceCheck >= 0) {
+                    user.balance = user.balance - withdrawAmount;
+
+                    saveBalance(user.id, user.balance);
+
+                    console.log("\nWithdraw successful, your balance in your account is now: " +
+                    Math.floor(user.balance* 100) / 100);
+                } else if (balanceCheck < 0) {
+                    console.log("Unfortunately you don't have enough balance for that. Try with smaller amount.");
+                    withdrawFunds();
+                } else {
+                    console.log("Something went wrong, try again");
+                    withdrawFunds();
+                }
+            } else {
+                console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
+                withdrawFunds();
+            }
+        }
+    } else {
+        console.log("\nSorry but min. withdraw amount is 1e and you can only use numbers (or 'quit' to go back).");
+        withdrawFunds();
+    }
+}
+
+function saveBalance(userID, userBalance) {
+    // Read data from accountDetails, add it to allUsers
+    allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+    const newAllUsers = allUsers.map((x) =>
+        x.id === userID ?
+            {...x, balance: userBalance} :
+            x,
+    );
+
+    // Saving newAllUsers back to accountDetails.json file
+    fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+        if (err) {
+            console.log("Could not save userData to file!");
+        }
+    });
+}
+
+function requests() {
+    // requests
 }
 
 function printHelp() {
@@ -139,8 +296,6 @@ function createAccount() {
 }
 
 function login() {
-    currentLoc = "login";
-
     let loginID = "";
     let loginPassword = "";
 
@@ -231,7 +386,7 @@ function closeAccount() {
         currentLoc = "start";
     } else if (input === "no") {
         console.log("Ok, returning to menu");
-        // set currentLock to menu, returning back to menu
-        currentLoc = "menu";
+        // set currentLock to menu, returning back to account menu
+        currentLoc = "account";
     }
 }
