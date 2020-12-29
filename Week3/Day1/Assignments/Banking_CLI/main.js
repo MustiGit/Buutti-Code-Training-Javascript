@@ -39,13 +39,13 @@ while (running) {
             currentLoc = "start";
         }
     } else if (currentLoc === "menu") {
-        console.log("-----------------------------");
+        console.log("\n-----------------------------");
         console.log("Welcome " + user.name + "!\n");
         console.log("Choose an option:");
         console.log("account --> ACCOUNT OPTIONS");
-        console.log("funds --> FUNDS AND REQUESTS");
+        console.log("funds ----> FUNDS AND REQUESTS");
         console.log("-----------------------------");
-        console.log("logout -----------> LOG OUT FROM ACCOUNT");
+        console.log("logout ---> LOG OUT FROM ACCOUNT");
 
         input = readline.question(">> ");
 
@@ -59,7 +59,7 @@ while (running) {
             currentLoc = "menu";
         }
     } else if (currentLoc === "account") {
-        console.log("Current account: " + user.name + "(" + user.id + ")\n");
+        console.log("Current account: " + user.name + ", (ID: " + user.id + ")\n");
         console.log("Choose an option:");
         console.log("modifyAccount --> MODIFY ACCOUNT");
         console.log("closeAccount ----------> CLOSE ACCOUNT");
@@ -80,7 +80,7 @@ while (running) {
             currentLoc = "account";
         }
     } else if (currentLoc === "funds") {
-        console.log("\nCurrent account: " + user.name + ", (" + user.id + ")");
+        console.log("\nCurrent account: " + user.name + ", (ID: " + user.id + ")");
         console.log("Balance: " + user.balance + "\n");
         console.log("Choose an option:");
         console.log("-----------------------------");
@@ -105,6 +105,8 @@ while (running) {
             transferFunds();
         } else if (input === "requestFunds") {
             requestFunds();
+        } else if (input === "fundRequests") {
+            fundRequests();
         } else if (input === "return") {
             currentLoc = "menu";
         } else {
@@ -113,26 +115,180 @@ while (running) {
     }
 }
 
-function requestFunds() {
-    // Some
+function fundRequests() {
+    console.log("\nFUND REQUESTS");
+    console.log("-----------------------------");
+    console.log(user.name + ", (ID: " + user.id + ")");
+    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+    console.log("-----------------------------");
+
+    if (user.fundRequests.length === 0) {
+        console.log("No-one has sent fund request to you, returning to menu.");
+    } else {
+        console.log("\nYou have following fund requests (ID, amount):");
+        for (const i in user.fundRequests) {
+            if (user.fundRequests) {
+                console.log((Number(i)+1) + ": " + user.fundRequests[i]);
+            }
+        }
+
+        const acceptInput = readline.question("\nPlease enter number of request to accept transfer " +
+        "(or 'quit' to go back in menu)\n>> ");
+
+        if (acceptInput === "quit") {
+            currentLoc = "funds";
+            // If accept input is >= 1 and given fundRequest index is not undefined (there IS request by that number)
+        } else if (user.fundRequests[Number(acceptInput) - 1][1] > user.balance) {
+            console.log("You dont have enough balance to pay requested amount.");
+            fundRequests();
+        } else if ((acceptInput >= 1) && (user.fundRequests[Number(acceptInput) - 1] !== undefined)) {
+            // Check for ID of fundRequest matching acceptInput
+            const transferTarget = user.fundRequests[Number(acceptInput) - 1][0];
+            // Check for requested amount matching acceptInput
+            const transferAmount = user.fundRequests[Number(acceptInput) - 1][1];
+
+            const passwordCheck = readline.question("Please enter your password to accept payment "+
+            "for following request: \n" + "To ID: " + transferTarget + ", Amount: " + transferAmount +
+            ". (or 'quit' to return back to menu)\n>> ");
+
+            if (passwordCheck === "quit") {
+                fundRequests();
+            } else if (passwordCheck === user.password) {
+                user.balance = Number(user.balance) - Number(transferAmount);
+
+                const userArray = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+                // Search userArray for transferTarget and add it with modified values to newAllUsers array.
+                const newAllUsers = userArray.map(balanceFunction);
+                function balanceFunction(x) {
+                    if (x.id === transferTarget) {
+                        // Modify target's balance to receive transferAmount
+                        x.balance = Number(x.balance) + Number(transferAmount);
+                        return x;
+                    } else if (x.id === user.id) {
+                        // Modify balance in newAllUsers to match user.balance
+                        x.balance = user.balance;
+
+                        // Remove correct fundRequest from array
+                        x.fundRequests.splice((Number(acceptInput) - 1), 1);
+
+                        // Update user.fundRequests
+                        user.fundRequests = x.fundRequests;
+                        return x;
+                    } else {
+                        return x;
+                    }
+                }
+
+                // Saving newAllUsers back to accountDetails.json file
+                fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+                    if (err) {
+                        console.log("Could not save userData to file!");
+                    }
+                });
+
+                console.log("\nTransfer successful, your balance in your account is now: " +
+                Math.floor(user.balance* 100) / 100);
+            } else {
+                console.log("Password was incorrect, please try again.");
+                fundRequests();
+            }
+        } else {
+            console.log("You didn't have request matching that number, please try again.");
+            fundRequests();
+        }
+    }
 }
+
+function requestFunds() {
+    console.log("\nREQUEST FUNDS");
+    console.log("-----------------------------");
+    console.log(user.name + ", (ID: " + user.id + ")");
+    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+    console.log("-----------------------------");
+
+    const requestTarget = readline.question("Please enter the ID you want to send request to:\n>> ");
+
+    if (requestTarget === "quit") {
+        currentLoc = "funds";
+    } else {
+        const userArray = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+
+        // Compare userArray:s id:s with transferTarget's ID and take true/false in checkBoolean
+        const checkBoolean = userArray.some((x)=> x.id === requestTarget);
+
+        if (checkBoolean) {
+            const requestAmount = readline.question("How much money do you want to request? Min. is 1.\n>> ");
+
+            if (requestAmount === "quit") {
+                currentLoc = "funds";
+            } else if (requestAmount > 1) {
+                const toCheckPassword = readline.question("To request funds, please enter your password " +
+          "(or type 'quit' to go back):\n>> ");
+
+                if (toCheckPassword === "quit") {
+                    currentLoc = "funds";
+                } else {
+                    if (toCheckPassword === user.password) {
+                        // Using mapping to find requestTarget and pushing id+requestAmount to it's fundRequests array
+                        const newAllUsers = userArray.map(pushFunction);
+
+                        function pushFunction(x) {
+                            if (x.id === requestTarget) {
+                                x.fundRequests.push([user.id, requestAmount]);
+                                return x;
+                            } else {
+                                return x;
+                            }
+                        }
+
+                        // Saving newAllUsers back to accountDetails.json file
+                        fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
+                            if (err) {
+                                console.log("Could not save userData to file!");
+                            }
+                        });
+
+                        console.log("\nRequest sent successfully to " + requestTarget + ".");
+                    } else {
+                        console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
+                        requestFunds();
+                    }
+                }
+            } else {
+                console.log("Minimum request amount is 1 and you can only use numbers. Please try again.");
+                requestFunds();
+            }
+        } else {
+            console.log("No user found by that ID. Try again.");
+            requestFunds();
+        }
+    }
+}
+
 
 function transferFunds() {
     console.log("\nTRANSFER FUNDS");
     console.log("-----------------------------");
-    console.log(user.name + ", (" + user.id + ")");
+    console.log(user.name + ", (ID: " + user.id + ")");
     console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
     console.log("-----------------------------");
     const transferAmount = readline.question("How much money do you want to transfer (min. 1)?\n>> ");
 
     if (transferAmount === "quit") {
         currentLoc = "funds";
+    } else if (transferAmount > user.balance) {
+        console.log("You don't have enough balance for that. Please try again with lower amount.");
+        transferFunds();
     } else if (transferAmount >= 1) {
         const transferTarget = readline.question("Which ID will receive transfer? (or 'quit' to go back)\n>> ");
 
         const userArray = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
 
         if (transferTarget === "quit") {
+            currentLoc = "funds";
+        } else if (transferTarget === user.id) {
+            console.log("Receiving ID must be different than your own ID");
             currentLoc = "funds";
         } else {
             // Compare userArray:s id:s with transferTarget's ID and take true/false in checkBoolean
@@ -147,14 +303,19 @@ function transferFunds() {
                 } else {
                     if (toCheckPassword === user.password) {
                         user.balance = Number(user.balance) - Number(transferAmount);
-                        saveBalance(user.id, user.balance);
 
-                        // Search userArray for transferTarget and add it with modified values to newAllUsers array.
-                        const newAllUsers = userArray.map((x) =>
-                            x.id === transferTarget ?
-                                {...x, balance: Number(x.balance) + Number(transferAmount)} :
-                                x,
-                        );
+                        const newAllUsers = userArray.map(balanceFunction);
+                        function balanceFunction(x) {
+                            if (x.id === transferTarget) {
+                                x.balance = Number(x.balance) + Number(transferAmount);
+                                return x;
+                            } else if (x.id === user.id) {
+                                x.balance = user.balance;
+                                return x;
+                            } else {
+                                return x;
+                            }
+                        }
 
                         // Saving newAllUsers back to accountDetails.json file
                         fs.writeFileSync("./accountDetails.json", JSON.stringify(newAllUsers), "utf8", (err) => {
@@ -164,7 +325,7 @@ function transferFunds() {
                         });
 
                         console.log("\nTransfer successful, your balance in your account is now: " +
-                        Math.floor(user.balance* 100) / 100);
+                        Math.floor(user.balance * 100) / 100);
                     } else {
                         console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
                         transferFunds();
@@ -205,7 +366,7 @@ function doesAccountExist() {
 function depositFunds() {
     console.log("\nDEPOSIT FUNDS");
     console.log("-----------------------------");
-    console.log(user.name + ", (" + user.id + ")");
+    console.log(user.name + ", (ID: " + user.id + ")");
     console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
     console.log("-----------------------------");
     const depositAmount = readline.question("How much money do you want to deposit (min. 1)?\n>> ");
@@ -239,7 +400,7 @@ function depositFunds() {
 function withdrawFunds() {
     console.log("\nWITHDRAW FUNDS");
     console.log("-----------------------------");
-    console.log(user.name + ", (" + user.id + ")");
+    console.log(user.name + ", (ID: " + user.id + ")");
     console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
     console.log("-----------------------------");
 
@@ -262,7 +423,7 @@ function withdrawFunds() {
                     saveBalance(user.id, user.balance);
 
                     console.log("\nWithdraw successful, your balance in your account is now: " +
-                    Math.floor(user.balance* 100) / 100);
+                    Math.floor(user.balance * 100) / 100);
                 } else if (balanceCheck < 0) {
                     console.log("Unfortunately you don't have enough balance for that. Try with smaller amount.");
                     withdrawFunds();
@@ -352,7 +513,7 @@ function createAccount() {
     console.log(`Hello ${user.name}! It's nice to have you as a client!`);
 
     let depositAmount = readline.question("How much cash you want to " +
-    "deposit? (10€ is the minimum)" +
+    "deposit? (10€ is the minimum) " +
     "Or 'quit' to go back to start: \n>> ");
 
     while ((depositAmount != "quit") && (depositAmount < 10)) {
@@ -369,7 +530,7 @@ function createAccount() {
         user.id + ") with balance of: " + user.balance + ".");
 
         console.log("In future, you will use your ID and "+
-        "password to login at any Mustget Banking CLI");
+        "password to login at any Mustget Banking CLI.");
 
         toFile({id: user.id, name: user.name, password: user.password,
             balance: user.balance, fundRequests: user.fundRequests});
@@ -405,7 +566,7 @@ function login() {
                 user = new User(userArr[0].id, userArr[0].name, userArr[0].password,
                     userArr[0].balance, userArr[0].fundRequests);
 
-                console.log("Login successful.");
+                console.log("Login successful.\n");
                 currentLoc = "menu";
             } else {
                 console.log("\nThe ID or password is incorrect, please try again. (or 'quit' to go back to start)");
@@ -476,7 +637,7 @@ function closeAccount() {
 function modifyAccount() {
     console.log("\nMODIFY ACCOUNT");
     console.log("-----------------------------");
-    console.log(user.name + ", (" + user.id + ")");
+    console.log(user.name + ", (ID: " + user.id + ")");
     console.log("-----------------------------");
 
     input = readline.question("Do you want to modify a 'name' or 'password'? (or 'quit' to go back)\n>> ");
@@ -503,6 +664,7 @@ function modifyAccount() {
                 // Read data from accountDetails, add it to allUsers
                 allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
 
+                // Change old name to new user.name
                 const newAllUsers = allUsers.map((x) =>
                     x.id === user.id ?
                         {...x, name: user.name} :
@@ -524,7 +686,7 @@ function modifyAccount() {
             }
         }
     } else if (input === "password") {
-        input = readline.question("Ok, type in new password (or 'quit' to go back):\n>> ");
+        input = readline.question("Ok, type in new password of at least 5 letters (or 'quit' to go back):\n>> ");
 
         // More checks if needed, letters, numbers, special marks....
         if (input === "quit") {
@@ -555,6 +717,8 @@ function modifyAccount() {
                 });
 
                 console.log("Password changed.");
+            } else {
+                console.log("Old password wasn't correct, please try again.");
             }
         }
     } else if (input === "quit") {
