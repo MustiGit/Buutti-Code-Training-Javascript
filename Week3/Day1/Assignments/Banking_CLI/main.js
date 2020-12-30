@@ -116,15 +116,15 @@ while (running) {
 }
 
 function fundRequests() {
-    console.log("\nFUND REQUESTS");
-    console.log("-----------------------------");
-    console.log(user.name + ", (ID: " + user.id + ")");
-    console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
-    console.log("-----------------------------");
-
     if (user.fundRequests.length === 0) {
         console.log("No-one has sent fund request to you, returning to menu.");
     } else {
+        console.log("\nFUND REQUESTS");
+        console.log("-----------------------------");
+        console.log(user.name + ", (ID: " + user.id + ")");
+        console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
+        console.log("-----------------------------");
+
         console.log("\nYou have following fund requests (ID, amount):");
         for (const i in user.fundRequests) {
             if (user.fundRequests) {
@@ -404,41 +404,41 @@ function withdrawFunds() {
     console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
     console.log("-----------------------------");
 
-    const withdrawAmount = (readline.question("How much money do you want to withdraw?\n>> "));
+    let withdrawAmount = (readline.question("How much money do you want to withdraw? (or 'quit' to go back)\n>> "));
 
+    while ((Number(withdrawAmount) > Number(user.balance)) ||
+    (Number(withdrawAmount) < 1) || (withdrawAmount === "quit")) {
+        if (withdrawAmount === "quit") {
+            break;
+        } else if (Number(withdrawAmount) > Number(user.balance)) {
+            console.log("\nYou dont have enough balance for that. Try with smaller amount.\n");
+            withdrawAmount = (readline.question("How much money do you want to withdraw? " +
+            "(or 'quit' to go back).\n>> "));
+        } else if (Number(withdrawAmount) < 1) {
+            console.log("\nSorry but min. withdraw amount is 1.");
+            withdrawAmount = (readline.question("How much money do you want to withdraw? " +
+            "(or 'quit' to go back).\n>> "));
+        }
+    }
     if (withdrawAmount === "quit") {
         currentLoc = "funds";
-    } else if (withdrawAmount >= 1) {
-        const toCheckPassword = readline.question("To withdraw funds, please enter your password " +
+    } else {
+        let input = readline.question("To withdraw funds, please enter your password " +
         "(or type 'quit' to go back):\n>> ");
-        if (toCheckPassword === "quit") {
+
+        while ((input != user.password) && (input != "quit")) {
+            input = readline.question("Wrong password try again.\n Please enter your password " +
+        "(or type 'quit' to go back):\n>> ");
+        }
+        if (input === "quit") {
             currentLoc = "funds";
         } else {
-            if (toCheckPassword === user.password) {
-                const balanceCheck = user.balance - withdrawAmount;
+            user.balance = user.balance - withdrawAmount;
+            saveBalance(user.id, user.balance);
 
-                if (balanceCheck >= 0) {
-                    user.balance = user.balance - withdrawAmount;
-
-                    saveBalance(user.id, user.balance);
-
-                    console.log("\nWithdraw successful, your balance in your account is now: " +
-                    Math.floor(user.balance * 100) / 100);
-                } else if (balanceCheck < 0) {
-                    console.log("Unfortunately you don't have enough balance for that. Try with smaller amount.");
-                    withdrawFunds();
-                } else {
-                    console.log("Something went wrong, try again");
-                    withdrawFunds();
-                }
-            } else {
-                console.log("\nThe password is incorrect, please try again. (or 'quit' to go back to start)");
-                withdrawFunds();
-            }
+            console.log("\nWithdraw successful, your balance in your account is now: " +
+            Math.floor(user.balance * 100) / 100);
         }
-    } else {
-        console.log("\nSorry but min. withdraw amount is 1e and you can only use numbers (or 'quit' to go back).");
-        withdrawFunds();
     }
 }
 
@@ -502,6 +502,11 @@ function printHelp() {
     }
 }
 
+function checkPassword(str) {
+    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    return re.test(str);
+}
+
 function createAccount() {
     console.log("Ok, let create a new account!");
 
@@ -510,6 +515,13 @@ function createAccount() {
     user.name = readline.question("What is your name?\n>> ");
     user.password = readline.question("Please give us password " +
     "for this account:\n>> ");
+
+    while (!checkPassword(user.password)) {
+        user.password = readline.question("Password too weak. Password must have length " +
+        "of 6-20 letters and have to contain one upper- and one lowercase letter, plus one " +
+        "numeric digit.\n Please give us password for this account:\n>> ");
+    }
+
     console.log(`Hello ${user.name}! It's nice to have you as a client!`);
 
     let depositAmount = readline.question("How much cash you want to " +
@@ -686,19 +698,29 @@ function modifyAccount() {
             }
         }
     } else if (input === "password") {
-        input = readline.question("Ok, type in new password of at least 5 letters (or 'quit' to go back):\n>> ");
+        input = readline.question("Ok, type in new password (6-20 letters, at least one or more lower " +
+        "and upper case letters + one numeric digit. Or type 'quit' to go back):\n>> ");
 
-        // More checks if needed, letters, numbers, special marks....
+        while ((!checkPassword(input) && input != "quit")) {
+            input = readline.question("Password too weak. Password must have length " +
+            "of 6-20 letters and have to contain one upper- and one lowercase letter, plus one " +
+            "numeric digit.\n Please give us password for this account:\n>> ");
+        }
+
         if (input === "quit") {
-            modifyAccount();
-        } else if (input.length < 5) {
-            console.log("\nNew password must contain at least 5 letters. Try again.");
-            modifyAccount();
+            currentLoc = "account";
         } else {
             const newPassword = input;
             input = readline.question("To proceed with change, type in your "+
             "old password (or 'quit' to go back):\n>> ");
-            if (input === user.password) {
+
+            while ((input !== user.password) && (input !== "quit")) {
+                input = readline.question("Old password was wrong, try again.\nTo proceed with change, type in your "+
+            "old password (or 'quit' to go back):\n>> ");
+            }
+            if (input === "quit") {
+                currentLoc = "account";
+            } else {
                 user.password = newPassword;
 
                 // Read data from accountDetails, add it to allUsers
@@ -717,8 +739,6 @@ function modifyAccount() {
                 });
 
                 console.log("Password changed.");
-            } else {
-                console.log("Old password wasn't correct, please try again.");
             }
         }
     } else if (input === "quit") {
