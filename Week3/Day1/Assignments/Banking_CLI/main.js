@@ -15,6 +15,8 @@ let currentLoc = "start";
 let running = true;
 let input = "";
 
+/* ***** MENU NAVIGATION ****** Program always returns back to currentLoc location,
+when user is finished with task or wants to return in previous menu */
 while (running) {
     if (currentLoc === "start") {
         console.log("-----------------------------");
@@ -114,7 +116,11 @@ while (running) {
         }
     }
 }
+// ****** END OF MENU NAVIGATION *******
 
+// FUNCTIONS FOR DIFFERENT TASKS
+
+// fundRequests function allows user to see and manage different fund requests
 function fundRequests() {
     if (user.fundRequests.length === 0) {
         console.log("No-one has sent fund request to you, returning to menu.");
@@ -200,6 +206,7 @@ function fundRequests() {
     }
 }
 
+// requestFunds function allows user to request funds from another user
 function requestFunds() {
     console.log("\nREQUEST FUNDS");
     console.log("-----------------------------");
@@ -207,7 +214,8 @@ function requestFunds() {
     console.log("Current balance: " + Math.floor(user.balance* 100) / 100);
     console.log("-----------------------------");
 
-    const requestTarget = readline.question("Please enter the ID you want to send request to:\n>> ");
+    const requestTarget = readline.question("Please enter the ID you want to send " +
+    "request to (or 'quit' to go back):\n>> ");
 
     if (requestTarget === "quit") {
         currentLoc = "funds";
@@ -266,7 +274,7 @@ function requestFunds() {
     }
 }
 
-
+// transferFunds function allows user to see transfer menu and to transfer funds to another user
 function transferFunds() {
     console.log("\nTRANSFER FUNDS");
     console.log("-----------------------------");
@@ -304,6 +312,7 @@ function transferFunds() {
                     if (toCheckPassword === user.password) {
                         user.balance = Number(user.balance) - Number(transferAmount);
 
+                        // Map wanted id from userArray, update balance and return data to newAllUsers.
                         const newAllUsers = userArray.map(balanceFunction);
                         function balanceFunction(x) {
                             if (x.id === transferTarget) {
@@ -342,6 +351,7 @@ function transferFunds() {
     }
 }
 
+// doesAccountExist function allows user to check, if given number matches existing account
 function doesAccountExist() {
     const accToCheck = readline.question("Give ID number to see, if the account exists (or 'return' to go back)\n>> ");
 
@@ -363,6 +373,7 @@ function doesAccountExist() {
     }
 }
 
+// depositFunds allows user to see deposit menu and to deposit funds to his own account
 function depositFunds() {
     console.log("\nDEPOSIT FUNDS");
     console.log("-----------------------------");
@@ -397,6 +408,7 @@ function depositFunds() {
     }
 }
 
+// withdrawFunds function allows user to see withdraw menu and withdraw funds from account
 function withdrawFunds() {
     console.log("\nWITHDRAW FUNDS");
     console.log("-----------------------------");
@@ -442,6 +454,8 @@ function withdrawFunds() {
     }
 }
 
+/* saveBalance function is used to read user data from accountDetails.json file,
+modify and save it back with updated balance. */
 function saveBalance(userID, userBalance) {
     // Read data from accountDetails, add it to allUsers
     allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
@@ -460,6 +474,7 @@ function saveBalance(userID, userBalance) {
     });
 }
 
+// printHelp function gives different help information, depending on location of user.
 function printHelp() {
     console.log("-----------------------------");
     console.log("Here’s a list of commands you can currently use!");
@@ -502,11 +517,15 @@ function printHelp() {
     }
 }
 
+/* checkPassword function is used to check if given password matches safety requirements:
+Length 6-20 characters, at least one capital letter, small letter, numeric digit */
 function checkPassword(str) {
     const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
     return re.test(str);
 }
 
+/* createAccount function allows user to create new account (also using newID function to randomize ID),
+which is then saved to accountDetails.json with toFile() function. */
 function createAccount() {
     console.log("Ok, let create a new account!");
 
@@ -550,6 +569,24 @@ function createAccount() {
     user = {};
 }
 
+// toFile function is used to save all user information to accountDetails.json file
+function toFile(saveData) {
+    allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
+    allUsers.push(saveData);
+
+    fs.writeFileSync("./accountDetails.json", JSON.stringify(allUsers), "utf8", (err) => {
+        if (err) {
+            console.log("Could not save userData to file!");
+        }
+    });
+}
+
+// newID function is used to create random ID, when new account is created
+function newID() {
+    return (Date.now() + ( (Math.random()*100000).toFixed()));
+}
+
+// login function is called when user wants to login into his account. Checks for ID and password.
 function login() {
     let loginID = "";
     let loginPassword = "";
@@ -588,21 +625,7 @@ function login() {
     }
 }
 
-function toFile(saveData) {
-    allUsers = JSON.parse(fs.readFileSync("./accountDetails.json", "utf8"));
-    allUsers.push(saveData);
-
-    fs.writeFileSync("./accountDetails.json", JSON.stringify(allUsers), "utf8", (err) => {
-        if (err) {
-            console.log("Could not save userData to file!");
-        }
-    });
-}
-
-function newID() {
-    return (Date.now() + ( (Math.random()*100000).toFixed()));
-}
-
+// logOut function is called, when user wants to logout. Returns program to start.
 function logOut() {
     input = readline.question("Are you sure you want to log out? (yes / no)\n>> ");
     if (input === "yes") {
@@ -618,6 +641,7 @@ function logOut() {
     }
 }
 
+// closeAccount function allows user to close his account and remove it's data from accountDetails.json file.
 function closeAccount() {
     input = readline.question("Are you sure you want to close your account? " +
     user.id + " (yes / no)\n>> ");
@@ -646,6 +670,7 @@ function closeAccount() {
     }
 }
 
+// modifyAccount function allows user to modify username or password.
 function modifyAccount() {
     console.log("\nMODIFY ACCOUNT");
     console.log("-----------------------------");
