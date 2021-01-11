@@ -3,7 +3,7 @@ import {user, currentLoc, changeCurrentLoc, login, logOut, printHelp, createAcco
     doesAccountExist, transferFunds, depositFunds, withdrawFunds, requestFunds, fundRequests} from "./functions.js";
 
 let running = true;
-let input = "";
+let command = "";
 
 /* ***** MENU NAVIGATION ****** Program always returns back to currentLoc location,
 when user is finished with task or wants to return in previous menu */
@@ -18,29 +18,21 @@ while (running) {
         console.log("createAccount --> CREATE ACCOUNT");
         console.log("quit -----------> SHUTDOWN THE CLI");
 
-        input = readline.question(">> ");
+        const startCommands = {
+            help: () => printHelp(),
+            login: () => login(),
+            createaccount: () => createAccount(),
+            default: () => changeCurrentLoc("start"),
+        };
 
-        switch (input.toLowerCase()) {
-        case "quit":
-            console.log("Exiting....");
+        command = readline.question(">> ");
+        command = command.toLowerCase();
+
+        if (command === "quit") {
+            console.log("Exiting...");
             running = false;
-            break;
-
-        case "help":
-            printHelp();
-            break;
-
-        case "login":
-            login();
-            break;
-
-        case "createaccount":
-            createAccount();
-            break;
-
-        default:
-            changeCurrentLoc("start");
-            break;
+        } else {
+            startCommands[command] ? startCommands[command]() : startCommands["default"]();
         }
 
         break;
@@ -55,22 +47,16 @@ while (running) {
         console.log("-----------------------------");
         console.log("logout ---> LOG OUT FROM ACCOUNT");
 
-        input = readline.question(">> ");
+        const menuCommands = {
+            printhelp: () => printHelp(),
+            account: () => changeCurrentLoc("account"),
+            funds: () => changeCurrentLoc("funds"),
+            logout: () => logOut(),
+            default: () => changeCurrentLoc("menu"),
+        };
 
-        switch (input.toLowerCase()) {
-        case "account":
-            changeCurrentLoc("account");
-            break;
-        case "funds":
-            changeCurrentLoc("funds");
-            break;
-        case "logout":
-            logOut();
-            break;
-        default:
-            changeCurrentLoc("menu");
-            break;
-        }
+        command = readline.question(">> ");
+        menuCommands[command] ? menuCommands[command]() : menuCommands["default"]();
 
         break;
 
@@ -83,29 +69,17 @@ while (running) {
         console.log("doesAccountExist -- > CHECK BY ID IF ACCOUNT EXISTS");
         console.log("return -----------> RETURN TO MENU");
 
-        input = readline.question(">> ");
+        const accountCommands = {
+            help: () => printHelp(),
+            modifyaccount: () => modifyAccount(),
+            closeaccount: () => closeAccount(),
+            doesaccountexist: () => doesAccountExist(),
+            return: () => changeCurrentLoc("menu"),
+            default: () => changeCurrentLoc("account"),
+        };
 
-        switch (input.toLowerCase()) {
-        case "modifyaccount":
-            modifyAccount();
-            break;
-
-        case "closeaccount":
-            closeAccount();
-            break;
-
-        case "doesaccountexist":
-            doesAccountExist();
-            break;
-
-        case "return":
-            changeCurrentLoc("menu");
-            break;
-
-        default:
-            changeCurrentLoc("account");
-            break;
-        }
+        command = readline.question(">> ");
+        accountCommands[command] ? accountCommands[command]() : accountCommands["default"]();
 
         break;
 
@@ -126,37 +100,19 @@ while (running) {
         console.log("-----------------------------");
         console.log("return -----------> RETURN TO MENU");
 
-        input = readline.question(">> ");
+        const fundsCommands = {
+            help: () => printHelp(),
+            withdrawfunds: () => withdrawFunds(),
+            depositfunds: () => depositFunds(),
+            transferfunds: () => transferFunds(),
+            requestfunds: () => requestFunds(),
+            fundrequests: () => fundRequests,
+            return: () => changeCurrentLoc("menu"),
+            default: () => changeCurrentLoc("funds"),
+        };
 
-        switch (input.toLowerCase()) {
-        case "withdrawfunds":
-            withdrawFunds();
-            break;
-
-        case "depositfunds":
-            depositFunds();
-            break;
-
-        case "transferfunds":
-            transferFunds();
-            break;
-
-        case "requestfunds":
-            requestFunds();
-            break;
-
-        case "fundrequests":
-            fundRequests();
-            break;
-
-        case "return":
-            changeCurrentLoc("menu");
-            break;
-
-        default:
-            changeCurrentLoc("funds");
-            break;
-        }
+        command = readline.question(">> ");
+        fundsCommands[command] ? fundsCommands[command]() : fundsCommands["default"]();
 
         break;
 
