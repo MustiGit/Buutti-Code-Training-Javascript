@@ -19,12 +19,17 @@ document.getElementById("submitBTN").addEventListener("click", function() {
         } else {
             // Begin calculations by formula
             const litres = (drinkSize / 1000) * doses;
-            const grams = litres * 8 * volume;
+            const gramFactor = 8;
+            const grams = litres * gramFactor * volume;
             const burning = weight / 10;
             const gramsLeft = grams - (burning * time);
 
+            const genderFactorMale = 0.7;
+            const genderFactorFemale = 0.6;
+
             // If gender = male, calculate with value of 0.7, else (if female), calculate with 0.6
-            let result = (gender === "male") ? (gramsLeft / (weight * 0.7)) : (gramsLeft / (weight * 0.6));
+            let result = (gender === "male") ?
+                (gramsLeft / (weight * genderFactorMale)) : (gramsLeft / (weight * genderFactorFemale));
 
             // Round up result to 2 decimals
             result = result.toFixed(2);
