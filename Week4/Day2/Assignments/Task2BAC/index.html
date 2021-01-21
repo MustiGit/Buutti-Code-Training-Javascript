@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+  <div id="container">
+
+    <div id="pageTop">
+
+      <h1>MustGet BAC Calculator</h1>
+
+    </div>
+
+    <div id="pageMiddle">
+
+      Gender: Male <input type="radio" id="genderM" name="gender" value="male">
+      Female<input type="radio" id="genderF" name="gender" value="female"> <br><br>
+
+      <label for="weight">Weight:</label>
+      <input type="text" id="weight" name="weight"><br><br>
+
+      <label for="time">Time since first drink (h):</label>
+      <input type="text" id="time" name="time"><br><br>
+
+      <label for="drinkSize">Drink size:</label>
+      <select id="drinkSize" name="drinkSize">
+        <option value="40">40ml</option>
+        <option value="80">80ml</option>
+        <option value="330">330ml</option>
+        <option value="500">500ml</option>
+        <option value="750">750ml</option>
+      </select><br><br>
+
+      <label for="volume">Alcohol by volume (%):</label>
+      <input type="text" id="volume" name="volume"><br><br>
+
+      <label for="doses">Doses (pcs):</label>
+      <input type="text" id="doses" name="doses"><br><br>
+
+      <button class ="button" id="submitBTN">Submit</button>
+      <button class = "button" id="resetBTN">Reset</button>
+
+    </div>
+
+    <div id="pageBottom">Your BAC is:</div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>

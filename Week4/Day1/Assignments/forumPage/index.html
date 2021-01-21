@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="pageTop">
+            <h1>MustGet Best Forum Ever!</h1>
+        </div>
+
+        <input type="button" value="Write new message" id="showHideBTN" />
+
+        <div class="newPost">
+            <h3>Name:</h3>
+            <input type="text" id="username" placeholder="Write your name here..." />
+            <h3>Post:</h3>
+            <textarea id="postInput" placeholder="Write your post here..."></textarea>
+            <input type="submit" value="Submit" id="submitBTN">
+        </div>
+
+        <div class="forumPostArea">
+            <h3>Current posts:</h3>
+            <div class="forumMessageContainer" id="forumMessages"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // EventListener for showing/hiding 'Add new post' -button
+        document.getElementById("showHideBTN").addEventListener("click", function () {
+            let getNewPost = document.querySelector(".newPost");
+            let getShowHideBTN = document.getElementById("showHideBTN");
+
+            if (getNewPost.style.display === "flex") {
+                getNewPost.style.display = "none";
+                getShowHideBTN.value = "Write new message";
+
+            } else {
+                getNewPost.style.display = "flex";
+                getShowHideBTN.value = "Hide new message";
+            }
+        });
+
+        // EventListener for 'Submit' -button
+        document.getElementById("submitBTN").addEventListener("click", function () {
+            let postInput = document.getElementById("postInput").value;
+            let username = document.getElementById("username").value;
+
+            if ((postInput === "") || (username === "")) {
+                alert("Please fill both fields before submitting.");
+            } else {
+
+                // Create new div element
+                const newDiv = document.createElement("div");
+
+                // Add new content to new div element
+                newDiv.className = "forumMessageContainer";
+                console.log(newDiv.this);
+                console.log(this);
+                newDiv.innerHTML = `<div class = forumMessageTop><div class = "forumUsername">${username}</div>
+                <button class = "button" id="forumDeleteBTN" onclick="deletePostFunction(this);">
+                    Delete</button></div><div class="forumText">${postInput}</div>`;
+
+                // Add new element and its content into the DOM
+                document.getElementById("forumMessages").appendChild(newDiv);
+
+                document.getElementById("postInput").value = "";
+                document.getElementById("username").value = "";
+            }
+        });
+
+        // Function that deletes forum-post (it's parentNode)
+        function deletePostFunction(input) {
+            document.getElementById("forumMessages").removeChild(input.parentNode.parentNode);
+        }
+
+    </script>
+
+</body>
+
+</html>
