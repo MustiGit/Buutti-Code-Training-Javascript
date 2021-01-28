@@ -1,0 +1,102 @@
+.App {
+  text-align: center;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  height: 100%;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color:  #9acecf;
+  margin: auto;
+  padding-bottom: 0.5%;
+}
+
+#pageTop {
+  width: 96%;
+  height: 20%;
+  text-align: center;
+  margin: 6px 5px 10px 5px;
+  padding: 2px;
+  background: #9acecf;
+  border-radius: 4px;
+  color: white;
+}
+
+#pageMiddle {
+  display: flex;
+  flex-direction: column;
+  margin: 2%;
+}
+
+#pageBottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.items {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  padding: 0.1vw;
+  margin: 4px 2px;
+  width: 20vw;
+}
+
+.itemsColumn {
+  display: flex;
+  flex-direction: column;
+  float: right;
+  margin-left: 2px;
+}
+
+.button {
+  background-color: #7faeaf;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0px 2px 0px 4px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.button2 {
+  background-color: #7faeaf;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  font-size: 16px;
+  margin: 0px 2px 2px 0px;
+  cursor: pointer;
+  border-radius: 12px;
+  width: 2vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.toDo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20vw;
+  border-radius: 10px;
+}
+
+#inputField {
+  border-color: #7faeaf;
+  border-radius: 4px;
+  background: #dff4f5;
+  padding-left: 0.5vw;
+}
+
