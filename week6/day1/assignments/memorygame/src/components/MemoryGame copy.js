@@ -9,25 +9,27 @@ import Morko from "./img/Morko.png";
 import Hunter from "./img/Hunter.png";
 import Backside from "./img/Backside.JPG";
 import Found from "./img/Found.JPG";
+import Win from "./img/Win.gif";
 
 function MemoryGame() {
+    // Array including all possible cards
     const allCardsArray = [
-        {id: 1, name: "Goblin", url: Goblin, turned: false},
-        {id: 2, name: "Warrior", url: Warrior, turned: false},
-        {id: 3, name: "Morko", url: Morko, turned: false},
-        {id: 4, name: "Hunter", url: Hunter, turned: false},
-        {id: 5, name: "Spider", url: Spider, turned: false},
-        {id: 6, name: "Mage", url: Mage, turned: false},
-        {id: 7, name: "Rogue", url: Rogue, turned: false},
-        {id: 8, name: "Troll", url: Troll, turned: false},
-        {id: 9, name: "Goblin", url: Goblin, turned: false},
-        {id: 10, name: "Warrior", url: Warrior, turned: false},
-        {id: 11, name: "Morko", url: Morko, turned: false},
-        {id: 12, name: "Hunter", url: Hunter, turned: false},
-        {id: 13, name: "Spider", url: Spider, turned: false},
-        {id: 14, name: "Mage", url: Mage, turned: false},
-        {id: 15, name: "Rogue", url: Rogue, turned: false},
-        {id: 16, name: "Troll", url: Troll, turned: false},
+        {id: 1, name: "Goblin", url: Goblin, status: "faceDown"},
+        {id: 2, name: "Warrior", url: Warrior, status: "faceDown"},
+        {id: 3, name: "Morko", url: Morko, status: "faceDown"},
+        {id: 4, name: "Hunter", url: Hunter, status: "faceDown"},
+        {id: 5, name: "Spider", url: Spider, status: "faceDown"},
+        {id: 6, name: "Mage", url: Mage, status: "faceDown"},
+        {id: 7, name: "Rogue", url: Rogue, status: "faceDown"},
+        {id: 8, name: "Troll", url: Troll, status: "faceDown"},
+        {id: 9, name: "Goblin", url: Goblin, status: "faceDown"},
+        {id: 10, name: "Warrior", url: Warrior, status: "faceDown"},
+        {id: 11, name: "Morko", url: Morko, status: "faceDown"},
+        {id: 12, name: "Hunter", url: Hunter, status: "faceDown"},
+        {id: 13, name: "Spider", url: Spider, status: "faceDown"},
+        {id: 14, name: "Mage", url: Mage, status: "faceDown"},
+        {id: 15, name: "Rogue", url: Rogue, status: "faceDown"},
+        {id: 16, name: "Troll", url: Troll, status: "faceDown"},
     ];
 
     // Set up first game
@@ -37,11 +39,22 @@ function MemoryGame() {
     // Setup up states
     const [renderArray, setRenderArray] = useState(shuffledArray);
     const [renderCounter, setRenderCounter] = useState(0);
+    const [firstPick, setFirstPick] = useState(-1);
+    const [secondPick, setSecondPick] = useState(-1);
 
     const resetGame = () => {
+    // Reset picks
+        setFirstPick(-1);
+        setSecondPick(-1);
+
+        // Shuffle array
         let shuffledArray = [...allCardsArray];
         shuffledArray = shuffledArray.sort(() => Math.random() - 0.5);
+
+        // Set shuffled array to renderArray
         setRenderArray(shuffledArray);
+
+        // Reset counter
         setRenderCounter(0);
     };
 
@@ -50,114 +63,133 @@ function MemoryGame() {
         // Map through all cards and make sure they are turned
         arrayHolder = arrayHolder.map((c) => ({
             ...c,
-            turned: true,
+            status: "faceUp",
         }));
         setRenderArray(arrayHolder);
     };
 
     const clickCard = (i) => {
-        // Make delay function
-        /* function timeout(delay) {
-            return new Promise( res => setTimeout(res, delay) );
-        }*/
-
         // Add contents of renderArray inside arrayHolder
         const arrayHolder = [...renderArray];
 
-        // Check if any of cards are already turned. Skip cards that have been found already.
-        const index = arrayHolder.findIndex((card) => (card.turned === true && card.name !== "Found"));
-
-        if (index === -1) {
-            // FIRST PICK
-            console.log("FIRST PICK");
-            arrayHolder[i].turned = true;
-
-            console.log(arrayHolder);
-
-            // Update state of renderArray by contents of arrayHolder
-            setRenderArray(arrayHolder);
-        } else if (index === i) {
-            // TURNING SAME CARD AGAIN
-            console.log("SAME CARD");
-        } else if (arrayHolder[i].name === arrayHolder[index].name) {
-            // MATCH FOUND
-            console.log("MATCH");
-
-            arrayHolder[i].turned = true;
-
-            setRenderCounter(renderCounter + 1);
-
-            // Update state of renderArray by contents of arrayHolder
-            // setRenderArray(arrayHolder);
-
-            // BREAK
-            // await timeout(1000); //for 1 sec delay
-
-            arrayHolder[i] = {name: "Found", url: Found, turned: true};
-            arrayHolder[index] = {name: "Found", url: Found, turned: true};
-
-            // Update state of renderArray by contents of arrayHolder
-            setRenderArray(arrayHolder);
+        if (arrayHolder[i].name === "Found") {
+            // Clicking "Found" card, button click does nothing
         } else {
-            // Not A PAIR
-            console.log("NOT A PAIR");
-            arrayHolder[i].turned = true;
+            // Get firstPick's value to firstCard, to use in this render
+            let firstCard = firstPick;
 
-            setRenderCounter(renderCounter + 1);
+            // If user didnt wait for previous cards to turn away
+            if ((firstCard !== -1) && (secondPick !== -1)) {
+                arrayHolder[firstCard].status = "faceDown";
+                arrayHolder[secondPick].status = "faceDown";
 
-            // Update state of renderArray by contents of arrayHolder
-            // setRenderArray(arrayHolder);
+                // Clear picks
+                firstCard = -1;
+                setSecondPick(-1);
+            }
 
-            // BREAK
-            // await timeout(1000); //for 1 sec delay
+            if (firstCard === -1) {
+            // --- FIRST PICK --- //
+                arrayHolder[i].status = "faceUp";
 
-            arrayHolder[i].turned = false;
-            arrayHolder[index].turned = false;
+                // Set index of current clicked card as firstPick
+                setFirstPick(i);
 
-            // Update state of renderArray by contents of arrayHolder
-            setRenderArray(arrayHolder);
+                // Update renderArray with arrayHolder's contents
+                setRenderArray(arrayHolder);
+            } else if (firstCard === i) {
+            // --- SAME CARD --- //
+                console.log("SAME CARD");
+            } else if (arrayHolder[i].name === arrayHolder[firstCard].name) {
+            // --- MATCH FOUND --- //
+                // Make chosen card visible
+                arrayHolder[i].status = "faceUp";
+
+                // Update guesses counter +1
+                setRenderCounter(renderCounter + 1);
+
+                // Clear picks
+                setFirstPick(-1);
+                setSecondPick(-1);
+
+                // Add 1s timeout before hiding cards
+                setTimeout(() => {
+                    // Modify found cards with "Found" name and status
+                    arrayHolder[i] = {name: "Found", url: Found, status: "found"};
+                    arrayHolder[firstCard] = {name: "Found", url: Found, status: "found"};
+
+                    // Update state of renderArray by contents of arrayHolder
+                    setRenderArray(arrayHolder);
+                }, 1000);
+            } else {
+            // --- NOT A PAIR --- //
+                arrayHolder[i].status = "faceUp";
+
+                // Update guesses counter with +1
+                setRenderCounter(renderCounter + 1);
+
+                // Take value of second pick
+                setSecondPick(i);
+
+                // Add 1s timeout before turning cards away
+                setTimeout(() => {
+                    arrayHolder[i].status = "faceDown";
+                    arrayHolder[firstCard].status = "faceDown";
+
+                    // Update state of renderArray by contents of arrayHolder
+                    setRenderArray(arrayHolder);
+                }, 1000);
+            }
+        }
+    };
+
+    const checkStyle = (card) => {
+        if (card.status === "faceUp") {
+            return {backgroundImage: `url(${card.url})`};
+        } else if (card.status === "faceDown") {
+            return {backgroundImage: `url(${Backside})`};
+        } else {
+            return {visibility: "hidden"};
         }
     };
 
     const renderCards = () => {
         // Check if all cards are turned
-        const allTurnedChecker = renderArray.every((card) => card.turned === true);
+        const allTurnedChecker = renderArray.every((card) => card.status === "faceUp");
         // Check if all card names "Found"
         const allFoundChecker = renderArray.every((card) => card.name === "Found");
 
         if (allFoundChecker) {
-            return (
-                <div id="winningScreen">YOU WON!</div>
-            );
-        } else if (allTurnedChecker) {
             /* Map through renderarray and make new div with
-             index number inside for every card of array WITHOUT onClick option */
+            index number inside for every card of array WITHOUT onClick option */
             return renderArray.map((card, i) => {
                 return (
                     <div className="grid-item" key={card.name + i}
-                        style={card.turned ? {backgroundImage: `url(${card.url})`} :
-                            {backgroundImage: `url(${Backside})`}} />
+                        style={{backgroundImage: `url(${Win})`}} />
+                );
+            });
+        } else if (allTurnedChecker) {
+            /* Map through renderarray and make new div with index number
+            inside for every card of array WITHOUT onClick option */
+            return renderArray.map((card, i) => {
+                return (
+                    <div className="grid-item" key={card.name + i}
+                        style={card.status === "faceUp" ?
+                            {backgroundImage: `url(${card.url})`} : {backgroundImage: `url(${Backside})`} }/>
                 );
             });
         } else {
-            /* Map through renderarray and make new div with index
-            number inside for every card of array WITH onClick option */
+            /* Map through renderarray and make new div with index number
+            inside for every card of array WITH onClick option */
             return renderArray.map((card, i) => {
                 return (
-                    <div className="grid-item" key={card.name + i}
-                        style={card.turned ? {backgroundImage: `url(${card.url})`} :
-                            {backgroundImage: `url(${Backside})`}}
+                    <div className={"grid-item" + (card.status === "faceUp" ? " flipped" : " back")} key={card.name + i}
+                        style={checkStyle(card)}
                         onClick={() => clickCard(i)} />
                 );
             });
         }
     };
-    /*
-                        <div className="grid-item" key={card.name + i}>
-                        <img className="image" src={card.turned ?  card.url :
-                            Backside } alt={card.name+i} onClick={() => clickCard(i)}></img>
-                    </div>
-                        */
     return (
         <div id="container">
 
@@ -178,5 +210,5 @@ function MemoryGame() {
         </div>
     );
 }
-// <input onChange={(e) => setNameInput(e.currentTarget.value)} />
+
 export default MemoryGame;
