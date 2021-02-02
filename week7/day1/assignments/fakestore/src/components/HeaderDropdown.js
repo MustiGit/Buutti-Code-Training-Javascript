@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom"
-
+import React, { useState } from "react";
 
 function HeaderDropdown() {
 
-const makeChoise = () => {
-    // Get choise, setChoise
-}
+    const [viewDropdown, setViewDropdown] = useState(false);
+
+    const showCategories = () => {
+        viewDropdown ? setViewDropdown(false) : setViewDropdown(true);
+    }
 
     return (
 
@@ -13,17 +14,18 @@ const makeChoise = () => {
             <div>MustGet Shopping</div>
 
             <div className="dropdown">
-                <nav>
-                    <button className="dropbtn" onClick={makeChoise()}>MENU</button>
-                    <div className="dropdown-content" id="myDropdown">
-                        <Link to="/" className="link">Home</Link>
-                        <Link to="/details" className="link">Details</Link>
-                        <Link to="/products" className="link">Products</Link>
-                    </div>
-                </nav>
+                <button onClick={() => showCategories()} className="dropbtn">CATEGORIES</button>
+
+                <div id="myDropdown" className="dropdown-content" style={ viewDropdown ? {display: "flex" }:{display: "none"}}>
+                <button className="button menuBTN"> Menu item 1 </button>
+                 <button className="button menuBTN"> Menu item 2 </button>
+                  <button className="button menuBTN"> Menu item 3 </button>
+                </div>
+
             </div>
         </div>
     )
 }
 
 export default HeaderDropdown;
+
