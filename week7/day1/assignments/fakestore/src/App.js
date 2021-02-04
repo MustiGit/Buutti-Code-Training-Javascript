@@ -1,52 +1,51 @@
-import './App.css';
-import HeaderDropdown from './components/HeaderDropdown';
-import Products from './components/Products';
-import Details from './components/Details';
-import { Route } from "react-router-dom";
-import React, { useState } from "react";
+import "./App.css";
+import HeaderDropdown from "./components/HeaderDropdown";
+import Products from "./components/Products";
+import Details from "./components/Details";
+import {Route} from "react-router-dom";
+import React, {useState} from "react";
 
 function App() {
+    const [productArray, setProductArray] = useState([]);
+    const [chosenCategory, setChosenCategory] = useState("all categories");
+    const [chosenID, setChosenID] = useState("");
 
-  const [productArray, setProductArray] = useState([]);
-  const [chosenCategory, setChosenCategory] = useState("all categories");
-  const [chosenID, setChosenID] = useState("");
+    return (
+        <div className="App">
+            <div id="container">
+                <HeaderDropdown
+                    setChosenCategory = {setChosenCategory}
+                    chosenCategory = {chosenCategory}
 
-  return (
-    <div className="App">
-      <div id="container">
-        <HeaderDropdown 
-        setChosenCategory = {setChosenCategory}
-        chosenCategory = {chosenCategory}
+                    setProductArray = {setProductArray}
+                    productArray = {productArray}
+                />
 
-        setProductArray = {setProductArray}
-        productArray = {productArray}
-        />
+                <Route path="/" exact>
+                    <Products
+                        setChosenCategory = {setChosenCategory}
+                        chosenCategory = {chosenCategory}
 
-        <Route path="/" exact>
-          <Products
-          setChosenCategory = {setChosenCategory}
-          chosenCategory = {chosenCategory}
+                        setProductArray = {setProductArray}
+                        productArray = {productArray}
 
-          setProductArray = {setProductArray}
-          productArray = {productArray}
+                        setChosenID = {setChosenID}
 
-          setChosenID = {setChosenID}
-          
-          />
-        </Route>
+                    />
+                </Route>
 
-        <Route path="/details" exact>
-          <Details
-          chosenID = {chosenID}
-          productArray = {productArray}
-          setProductArray = {setProductArray}
-          setChosenID = {setChosenID}
-          />
-        </Route>
+                <Route path="/details" exact>
+                    <Details
+                        chosenID = {chosenID}
+                        productArray = {productArray}
+                        setProductArray = {setProductArray}
+                        setChosenID = {setChosenID}
+                    />
+                </Route>
 
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 }
 /*
 

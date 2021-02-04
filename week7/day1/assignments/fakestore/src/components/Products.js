@@ -1,19 +1,18 @@
-import React, { useEffect } from "react";
+/* eslint-disable react/prop-types */
+import React, {useEffect} from "react";
 import Axios from "axios";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 
 const Products = (props) => {
-
-    let history = useHistory();
+    const history = useHistory();
 
     useEffect(() => {
         // For this fake purpose, if productArray is empty, get data from Axios
         if (props.productArray.length === 0) {
-
             async function getData() {
                 try {
-                    const response = await Axios.get(`https://fakestoreapi.com/products/`);
+                    const response = await Axios.get("https://fakestoreapi.com/products/");
 
                     // The !Array.isArray(response.data) method determines whether response.data is NOT an array.
                     if (!Array.isArray(response.data)) {
@@ -32,7 +31,6 @@ const Products = (props) => {
         } else {
             // Nothing
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const viewProduct = (product, i) => {
@@ -41,11 +39,12 @@ const Products = (props) => {
 
         // Change current view to details page
         history.push("/details");
-    }
+    };
 
     const renderData = () => {
         // Get state of chosenCategory and filter product categories by it
-        const filteredArr = props.productArray.filter(product => props.chosenCategory !== "all categories" ? product.category === props.chosenCategory : product.category);
+        const filteredArr = props.productArray.filter((product) => props.chosenCategory !== "all categories" ?
+            product.category === props.chosenCategory : product.category);
 
         return filteredArr.map((product, i) => {
             return (
@@ -65,7 +64,7 @@ const Products = (props) => {
         <div id="grid-container">
             {renderData()}
         </div>
-    )
-}
+    );
+};
 
 export default Products;

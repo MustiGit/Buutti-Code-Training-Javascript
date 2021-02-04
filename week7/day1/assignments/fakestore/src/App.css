@@ -90,6 +90,7 @@ button {
 #description {
   width: 25%;
   margin-left: 5%;
+  white-space: pre-wrap;
 }
 
 #modifyForm {
@@ -144,13 +145,64 @@ button {
   background-color: rgb(1, 129, 119);
 }
 
+#formContainer {
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
 #addNewProduct {
+  position:absolute;
+  width: 50vw;
+  height: 30vw;
   display: flex;
-  flex-direction: column;
-  margin-left: 5%;
+  flex-direction: row;
   text-align: left;
+  background-color: #9acecf;
+  padding: 1vw;
+  border-style: solid;
+  border-color: #7faeaf;
+  border-width: 1px;
+  border-radius: 2%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
 }
 
 #categoryBTN {
   width: 10vw;
+}
+
+textarea {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#fieldsAndBTNs {
+  display: flex;
+  flex-direction: column;
+}
+
+#addView {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10vw;
+  height: 10%;
+  font-size: 1vw;
+}
+
+#overViewDesc {
+  max-width: 15vw;
+  max-height: 8vw;
+  font-size: 0.7vw;
+  overflow: auto;
+  white-space: pre-wrap;
 }
