@@ -2,20 +2,25 @@ import './App.css';
 import HeaderDropdown from './components/HeaderDropdown';
 import Products from './components/Products';
 import Details from './components/Details';
-import AddNewProduct from './components/AddNewProduct';
 import { Route } from "react-router-dom";
 import React, { useState } from "react";
 
 function App() {
 
   const [productArray, setProductArray] = useState([]);
-  const [chosenCategory, setChosenCategory] = useState("");
+  const [chosenCategory, setChosenCategory] = useState("all categories");
   const [chosenID, setChosenID] = useState("");
 
   return (
     <div className="App">
       <div id="container">
-        <HeaderDropdown />
+        <HeaderDropdown 
+        setChosenCategory = {setChosenCategory}
+        chosenCategory = {chosenCategory}
+
+        setProductArray = {setProductArray}
+        productArray = {productArray}
+        />
 
         <Route path="/" exact>
           <Products
@@ -39,9 +44,6 @@ function App() {
           />
         </Route>
 
-        <Route path="/addNewProduct" exact>
-          <AddNewProduct />
-        </Route>
       </div>
     </div>
   );

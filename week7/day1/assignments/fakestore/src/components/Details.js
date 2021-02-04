@@ -1,29 +1,23 @@
 import { useHistory } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 
 function Details(props) {
 
     let history = useHistory();
 
+    // Set modifystatus to track toggle for modify button
     const [modifyStatus, setModifyStatus] = useState(false);
-    const [modifiedBody, setModifiedBody] = useState({});
 
+    // Set states for form input fields
+    const [title, setTitle] = useState("");
+    const [price, setPrice] = useState("");
+    const [image, setImage] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState("");
+
+    // Get index of chosen item (item that user wants to see details of)
     const index = props.productArray.findIndex(product => product.id === props.chosenID);
-
-    useEffect(() => {
-
-        if (!Object.keys(modifiedBody).length === 0) {
-        async function put() {
-            const response = await Axios.put("https://fakestoreapi.com/products/" + index, modifiedBody);
-            console.log(response);
-        }
-        put();
-    } else {
-        // Nothing
-    }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modifiedBody]);
 
     const goBack = () => {
         // Change view back to products
@@ -45,8 +39,12 @@ function Details(props) {
         // DELETE item
 
         async function remove() {
-            const response = await Axios.delete("https://fakestoreapi.com/products/" + index);
-            console.log(response);
+            try {
+                const response = await Axios.delete("https://fakestoreapi.com/products/" + index);
+                console.log(response);
+            } catch (err) {
+                console.log(err);
+            }
         }
         remove();
 
@@ -60,7 +58,6 @@ function Details(props) {
 
         // Clear chosenID and modifiedBody
         props.setChosenID("");
-        setModifiedBody({});
 
         // Update productArray with new data
         props.setProductArray(products);
@@ -70,21 +67,25 @@ function Details(props) {
         history.push("/");
     }
 
-    const handleUpdate = (e) => {
+    const handleUpdate = () => {
         // PUT ITEM
 
         /* Set modifiedBody with new values that are changed (not left empty). Causes call for useEffect's Axios put request
         parentNode is reading value of input fields. If there's any input, it makes change. If not, keep current value. */
-        setModifiedBody(
-            {
-                title: e.target.parentNode.parentNode[2].value ? e.target.parentNode.parentNode[2].value : props.productArray[index].title,
-                price: e.target.parentNode.parentNode[3].value ? Number(e.target.parentNode.parentNode[3].value) : props.productArray[index].price,
-                category: e.target.parentNode.parentNode[1].value ? e.target.parentNode.parentNode[1].value : props.productArray[index].category,
-                description: e.target.parentNode.parentNode[4].value ? e.target.parentNode.parentNode[4].value : props.productArray[index].description,
-                image: e.target.parentNode.parentNode[0].value ? e.target.parentNode.parentNode[0].value : props.productArray[index].image
-            }
-        )
-        
+        const modifiedBody = {
+            title: title ? title : props.productArray[index].title,
+            price: price ? Number(price) : props.productArray[index].price,
+            category: category ? category : props.productArray[index].category,
+            description: description ? description : props.productArray[index].description,
+            image: image ? image : props.productArray[index].image
+        }
+
+        async function put() {
+            const response = await Axios.put("https://fakestoreapi.com/products/" + index, modifiedBody);
+            console.log(response);
+        }
+        put();
+
         // REST OF THIS FUNCTION IS JUST FOR LOCAL UPDATE
 
         // For fake purposes, make new product array for local update
@@ -92,12 +93,12 @@ function Details(props) {
 
         // Make new product with updated info
         let product = {
-                id: props.productArray[index].id,
-                title: e.target.parentNode.parentNode[2].value ? e.target.parentNode.parentNode[2].value : props.productArray[index].title,
-                price: e.target.parentNode.parentNode[3].value ? Number(e.target.parentNode.parentNode[3].value) : props.productArray[index].price,
-                category: e.target.parentNode.parentNode[1].value ? e.target.parentNode.parentNode[1].value : props.productArray[index].category,
-                description: e.target.parentNode.parentNode[4].value ? e.target.parentNode.parentNode[4].value : props.productArray[index].description,
-                image: e.target.parentNode.parentNode[0].value ? e.target.parentNode.parentNode[0].value : props.productArray[index].image
+            id: props.productArray[index].id,
+            title: title ? title : props.productArray[index].title,
+            price: price ? Number(price) : props.productArray[index].price,
+            category: category ? category : props.productArray[index].category,
+            description: description ? description : props.productArray[index].description,
+            image: image ? image : props.productArray[index].image
         }
 
         // Modify array's chosen (index) item with new product
@@ -105,7 +106,16 @@ function Details(props) {
 
         // Update productArray with new data
         props.setProductArray(products);
-        
+
+    }
+
+    const handleReset = () => {
+        // Clear input fields
+        setTitle("");
+        setImage("");
+        setPrice("");
+        setDescription("");
+        setCategory("");
     }
 
     return (
@@ -119,7 +129,7 @@ function Details(props) {
                 </div>
 
             </div>
-            <div id="description">
+            <div id="description" >
                 <div>
                     {props.productArray[index].description}
                 </div>
@@ -129,19 +139,19 @@ function Details(props) {
 
             <form id="modifyForm" style={modifyStatus ? { display: "flex" } : { display: "none" }}>
                 Image:
-                    <input id="modifyIMG" type="text" placeholder="Please enter the IMG url here..." />
+                    <input id="modifyIMG" type="text" onChange={(e) => setImage(e.target.value)} value={image} placeholder="Please enter the IMG url here..." />
                     Category:
-                    <input id="modifyCategory" type="text" placeholder="Please enter the category here..." />
+                    <input id="modifyCategory" type="text" onChange={(e) => setCategory(e.target.value)} value={category} placeholder="Please enter the category here..." />
                     Title:
-                    <input id="modifyTitle" type="text" placeholder="Please enter the title here..." />
+                    <input id="modifyTitle" type="text" onChange={(e) => setTitle(e.target.value)} value={title} placeholder="Please enter the title here..." />
                     Price:
-                    <input id="modifyPrice" type="text" placeholder="Please enter the price here..." />
+                    <input id="modifyPrice" type="text" onChange={(e) => setPrice(e.target.value)} value={price} placeholder="Please enter the price here..." />
                     Description:
-                    <textarea rows="4" cols="50" id="modifyDescription" form="modifyForm" placeholder="Please enter the description here..."></textarea>
+                    <textarea rows="4" cols="50" id="modifyDescription" form="modifyForm" onChange={(e) => setDescription(e.target.value)} value={description} placeholder="Please enter the description here..."></textarea>
 
                 <div id="modifyButtonsWrapper">
-                    <button type="button" onClick={(e) => handleUpdate(e)}>UPDATE</button>
-                    <button type="reset">RESET</button>
+                    <button type="button" onClick={handleUpdate}>UPDATE</button>
+                    <button type="reset" onClick={handleReset}>RESET</button>
                     <button type="button" onClick={handleRemove}>REMOVE PRODUCT</button>
                 </div>
             </form>
@@ -151,9 +161,5 @@ function Details(props) {
 
     )
 }
-/*
 
-style={card.turned ?
-                                        {backgroundImage: `url(${card.url})`} : {backgroundImage: `url(${Backside})`}}
-                                        */
 export default Details;

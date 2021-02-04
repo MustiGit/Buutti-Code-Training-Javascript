@@ -11,25 +11,28 @@ const Products = (props) => {
         // For this fake purpose, if productArray is empty, get data from Axios
         if (props.productArray.length === 0) {
 
-       
-        async function getData() {
-            const response = await Axios.get(`https://fakestoreapi.com/products/`);
+            async function getData() {
+                try {
+                    const response = await Axios.get(`https://fakestoreapi.com/products/`);
 
-            // The !Array.isArray(response.data) method determines whether response.data is NOT an array.
-            if (!Array.isArray(response.data)) {
-                // If it's not an array, make it array
-                response.data = [response.data];
+                    // The !Array.isArray(response.data) method determines whether response.data is NOT an array.
+                    if (!Array.isArray(response.data)) {
+                        // If it's not an array, make it array
+                        response.data = [response.data];
+                    }
+
+                    // let arrayHolder = response.data;
+                    props.setProductArray(response.data);
+                } catch (err) {
+                    console.log(err);
+                }
             }
 
-            // let arrayHolder = response.data;
-            props.setProductArray(response.data);
+            getData();
+        } else {
+            // Nothing
         }
-        getData();
-
-    } else {
-        // Nothing
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const viewProduct = (product, i) => {
@@ -42,7 +45,7 @@ const Products = (props) => {
 
     const renderData = () => {
         // Get state of chosenCategory and filter product categories by it
-        const filteredArr = props.productArray.filter(product => props.chosenCategory !== "" ? product.category === props.chosenCategory : product.category);
+        const filteredArr = props.productArray.filter(product => props.chosenCategory !== "all categories" ? product.category === props.chosenCategory : product.category);
 
         return filteredArr.map((product, i) => {
             return (

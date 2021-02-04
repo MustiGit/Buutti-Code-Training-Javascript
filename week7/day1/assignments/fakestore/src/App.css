@@ -31,7 +31,7 @@
 #grid-container {
   display: grid;
   margin: auto;
-  grid-gap: 1vw 1vw;
+  grid-gap: 3vw 1vw;
   grid-template-columns: auto auto auto;
   padding: 0.5vw;
 }
@@ -84,6 +84,7 @@ button {
   cursor: pointer;
   border-radius: 12px;
   margin: 5% 0.5% 0.5% 0.5%;
+  text-transform: capitalize;
 }
 
 #description {
@@ -97,7 +98,6 @@ button {
   margin-left: 5%;
   text-align: left;
 }
-
 
 .dropbtn {
   background-color: #7faeaf;
@@ -142,4 +142,15 @@ button {
 
 .menuBTN:hover {
   background-color: rgb(1, 129, 119);
+}
+
+#addNewProduct {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5%;
+  text-align: left;
+}
+
+#categoryBTN {
+  width: 10vw;
 }
