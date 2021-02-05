@@ -1,0 +1,120 @@
+.App {
+  text-align: center;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  height: 100%;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color:  #9acecf;
+  margin: auto;
+  padding-bottom: 0.5%;
+}
+
+#pageTop {
+  width: 96%;
+  height: 20%;
+  text-align: center;
+  margin: 6px 5px 10px 5px;
+  padding: 2px;
+  background: #9acecf;
+  border-radius: 4px;
+  color: white;
+  font-size: 3vw;
+  font-weight: 750;
+}
+
+#grid-container {
+  display: grid;
+  grid-gap: 1vw 1vw;
+  grid-template-columns: auto auto auto auto;
+  padding: 0.5vw;
+}
+
+.grid-item {
+  padding: 1.5vw;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 5vw;
+  height: 5vw;
+  border-radius: 10%;
+  box-shadow: 2px 2px 3px black;
+  transition: 0.2s;
+}
+
+.grid-item:hover {
+  cursor: pointer;
+  box-shadow: 4px 4px 6px black;
+  transition: 0.2s;
+}
+
+.grid-item.flipped {
+  animation: flipAnim 0.8s;
+}
+
+.grid-item.back {
+  animation: flipAnim2 0.8s;
+}
+
+@keyframes flipAnim {
+  0%{
+    transform: rotateY(90deg);
+}
+  100% {
+    transform: rotateY(0deg);
+}
+}
+
+@keyframes flipAnim2 {
+  0%{
+    transform: rotateY(90deg);
+}
+  100% {
+    transform: rotateY(0deg);
+}
+}
+
+#guessesCounter {
+  font-size: 2vw;
+  font-weight: bold;
+  color: #7faeaf;
+}
+
+#guessesCounter:hover {
+  cursor: context-menu;
+}
+
+#winningScreen {
+  font-size: 2vw;
+  font-weight: bold;
+  color: #7faeaf;
+  text-align: center;
+}
+
+.button {
+  background-color: #7faeaf;
+  border-style: solid;
+  border-color: #7faeaf;
+  color: white;
+  padding: 0.5vw;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1vw;
+  margin: 0px 2px 0px 4px;
+  cursor: pointer;
+  border-radius: 1vw;
+  transition: all 0.2s;
+}
+
+.button:hover {
+  border-style: solid;
+  border-color: cyan;
+  
+}
