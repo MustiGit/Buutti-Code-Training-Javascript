@@ -1,0 +1,57 @@
+.container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 80%;
+    height: 100%;
+    border-style: solid;
+    border-width: 2px;
+    border-color:  #9acecf;
+    margin: auto;
+}
+#pageTop {
+    background-color: rgba(223, 243, 203, 0.911);
+    margin: 6px 5px 10px 5px;
+    padding: 2px;
+    text-align: center;
+    width: 99%;
+    background: #9acecf;
+    color: white;
+}
+.newPost {
+    display: none;
+    flex-flow: column;
+    width: 20%;
+}
+.forumPostArea {
+    display: flex;
+    flex-flow: column;
+    width: 75%;
+    height: 100%;
+    padding: 10px;
+    margin: 10px 0px 8px 0px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5daaaca2;
+    border-radius: 5px;
+}
+.forumMessageContainer {
+    display: flex;
+    flex-flow: column;
+}
+.forumMessageTop {
+    background-color: rgb(200, 224, 184);
+    padding: 5px;
+}
+#forumDeleteBTN {
+    float: right;
+}
+.forumUsername {
+    float: left;
+    text-decoration: underline;
+    font-size: 24px;
+}
+.forumText {
+    float: left;
+    margin-top: 10px;
+}

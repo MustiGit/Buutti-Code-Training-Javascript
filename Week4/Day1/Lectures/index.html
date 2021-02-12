@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--Defines the document as HTML5 document!-->
+<html>
+<!--Opening tag! Defines the HTML document!-->
+
+<head>
+    <!--<head> is initiated before <body>! (Load styles etc.)-->
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <!--Meta tag defining the charset-->
+    <script src="jokes.js"></script>
+</head>
+<!--Closes head!-->
+
+<body>
+    <!--Opens the webpage body!-->
+    <div class="container" id="containerID">
+        <h1>Sami Mustonen</h1>
+        <img src="img/nassu.jpg" />
+        <div class="wrapper">
+            <div class="box">
+                <h3>Links:</h3>
+                <a href="https://github.com/MustiGit"> My Github </a>
+                <br />
+                <a href="https://www.linkedin.com/in/sami-mustonen-8122a6171"> My Linkedin profile </a>
+                <br />
+                <a href="test.html"> This links to test.html!</a>
+                <br />
+                <p>And this cool button does too!</p>
+                <a href="test.html">
+                    <img src="img/coolButton.jpg" id="coolButton"></img>
+                </a>
+            </div>
+            <div class="box" style="background-color: rgb(130, 252, 136)">
+                <p>I just wanna be different!</p>
+            </div>
+            <div class="box"> And I feel empty. </div>
+        </div>
+        <button id="backgroundColorBTN" onclick="backgroundFunc()" ;>Change background color</button>
+
+        <div><p>And I'm great at telling jokes! Try me!</p></div>
+        <div>
+            <button class = jokeBTN id="randomJokes" ;>Random Jokes!</button>
+            <button class = jokeBTN id="nerdyJokes" ;>Nerdy Jokes!</button>
+            <button class = jokeBTN id="allJokes" ;>All Jokes!</button>
+        </div>
+
+        <div class="jokesLine"></div>
+
+    </div>
+    <!--Paragraphs, images and links come here.-->
+    <script>
+
+        let jokeBTNs = document.querySelectorAll(".jokeBTN");
+
+        jokeBTNs.forEach(function (i) {
+            i.addEventListener('click', function () {
+                let getJokesLine = document.querySelector(".jokesLine");
+                if (i.id === "randomJokes") {
+                    getJokesLine.innerHTML = "";
+                    const joke = jokes[Math.floor(Math.random() * jokes.length)];
+                    getJokesLine.innerHTML = (joke.joke);
+                
+                } else if (i.id === "nerdyJokes") {
+                    getJokesLine.innerHTML = "";
+                    // let nerdyJokes = jokes.filter(joke => joke.categories[0] = "nerdy");
+                    let nerdyJokes = jokes.filter(joke => joke.categories.includes("nerdy"));
+                    
+                    const nerdyJoke = nerdyJokes[Math.floor(Math.random() * nerdyJokes.length)];
+                    getJokesLine.innerHTML = '"' + (nerdyJoke.joke) + '"';
+                    
+                } else if (i.id === "allJokes") {
+                    getJokesLine.innerHTML = "";
+                    for (var x = 0; x < jokes.length; x++) {
+                    
+                        getJokesLine.innerHTML += (jokes[x].joke) + "<br />";
+                    }
+                } else {
+                    console.log("No jokes for you!");
+                }
+            });
+        });
+
+        function backgroundFunc() {
+            const container = document.querySelector(".container");
+            const style = getComputedStyle(container)
+            if (style.backgroundColor === "rgb(255, 255, 255)") {
+                container.style.backgroundColor = "rgb(220, 220, 220)";
+            } else {
+                container.style.backgroundColor = "rgb(255, 255, 255)";
+            }
+        }
+
+    </script>
+</body>
+<!--Closes body!-->
+
+</html>
+<!--Closing tag marked with /!-->
