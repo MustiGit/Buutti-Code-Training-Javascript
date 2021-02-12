@@ -1,0 +1,30 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "Johnny Kelly"
+    },
+    {
+      "id": 3,
+      "name": "Jonathan Smith"
+    },
+    {
+      "id": 2,
+      "name": "Jaska Smith"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Jatimatiikki",
+      "price": 200
+    }
+  ],
+  "purchases": [
+    {
+      "customerId": 2,
+      "productId": 1,
+      "id": 1
+    }
+  ]
+}

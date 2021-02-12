@@ -1,0 +1,101 @@
+.App {
+  text-align: center;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  height: 100%;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color:  #9acecf;
+  margin: auto;
+  padding-bottom: 0.5%;
+}
+
+#pageTop {
+  width: 96%;
+  height: 20%;
+  text-align: center;
+  margin: 6px 5px 10px 5px;
+  padding: 2px;
+  background: #9acecf;
+  border-radius: 4px;
+  color: white;
+}
+
+#pageMiddle {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin: 2%;
+}
+
+#pageBottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.numbers {
+  background-color: #7faeaf;
+  color: white;
+  padding: 1vw;
+  display: inline-block;
+  margin: 4px 2px;
+  border-radius: 50%;
+}
+
+.button {
+  background-color: #7faeaf;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+/**** NAVIGATION BAR ****/
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+nav {
+  max-width: 100%;
+  mask-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #ffffff 25%, #ffffff 75%, rgba(255, 255, 255, 0) 100%);
+  margin: 0 auto;
+}
+
+nav ul {
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0) 100%);
+  box-shadow: 0 0 1.5vw rgba(0, 0, 0, 0.1), inset 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+nav ul li {
+  display: inline-block;
+}
+
+nav ul li a {
+  padding: 0.5vw;
+  font-family: "Open Sans";
+  text-transform:uppercase;
+  color: purple;
+  font-size: 1vw;
+  text-decoration: none;
+  display: block;
+}
+
+nav ul li a:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), inset 0 0 1px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  color: purple;
+}
+/**** NAVIGATION BAR ENDS ****/
