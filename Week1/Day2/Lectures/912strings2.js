@@ -9,4 +9,3 @@ string = string.trim();
 string = string.charAt(0).toLowerCase() + string.slice(1);
 
 console.log(string.substring(0,20));
-
